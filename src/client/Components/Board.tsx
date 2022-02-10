@@ -100,7 +100,7 @@ class Board extends Component<{}, BoardState> {
             message: `Player ${winner} wins!`
           });
 
-          this.getScores('POST', JSON.stringify({ winner }));
+          this.getScores();
 
         // draw condition: no '-' remaining in board without above win condition triggering
         } else if (!spacesLeft()){
