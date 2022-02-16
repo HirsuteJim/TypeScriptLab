@@ -27,7 +27,7 @@ class Board extends Component<{}, BoardState> {
     // these will be passed into event handlers and called from outside the object
     // where the context of `this` would be otherwise different
     this.resetBoard = this.resetBoard.bind(this);
-    this.hanleBoxClick = this.hanleBoxClick.bind(this);
+    this.handleBoxClick = this.handleBoxClick.bind(this);
   }
 
   componentDidMount() {
@@ -116,7 +116,7 @@ class Board extends Component<{}, BoardState> {
   
   }
 
-  hanleBoxClick() {
+  handleBoxClick() {
 
   }
 
