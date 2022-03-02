@@ -12,6 +12,8 @@ In this unit, you will be using TypeScript to create a full-stack version of Tic
 
 ## Getting Started
 
+- Run `node -v` to make sure you're using a recent version of Node! This unit uses ESM `import` statements on the backend, which older versions (prior to 12.17) do not support - so if your version is lower than this, you'll need to install a later one.  
+
 - Run `npm install` to install all dependencies
 
 - Run `npm start` to run the Webpack dev server on `localhost:8080` and the Node server on `localhost:3000`
@@ -34,9 +36,10 @@ TypeScript projects also require a **TSConfig** file, which is a JSON file that 
 
 - [ ] In the root directory, create a file called `tsconfig.json`. The presence of this file will indicate that the directory is the root of a TypeScript project - and in order to compile our files, we'll need to set some specifications.
 - [ ] First things first, the compiler needs to know where in the directory to look for TypeScript files, and which files it should compile. We can specify this using either a list of individual **files**, or a list of directories under which all subfiles will be **included**.
-- [ ] We also need to set a `compilerOptions` property - this will be an object containing a number of key-value pairs that will set specific rules for the TypeScript compiler to follow.
+- [ ] We also need to set a `compilerOptions` property - this will be an object containing a number of key-value pairs that will set specific rules for the TypeScript compiler to follow. There are many different possible option properties that can be set here - for reference, [this section of the documentation](https://www.typescriptlang.org/tsconfig#compilerOptions) breaks them up into a number of different categories and outlines each. For the purposes of this unit, however, we'll only need to specify a few of them:
   - [ ] Our project uses JSX syntax, so we'll need to tell the compiler what to do with this. In the JavaScript code that our TypeScript files will compile to, any JSX components should be converted into calls to `React.createElement`.
   - [ ] As we learned in the Build Tools unit, there are several different specifications that JavaScript modules may follow - the most common being *ES Modules* and *CommonJS*. TypeScript follows the ESM specification, and by default, treats all modules as if they are ES6 modules. Although the code in our application exclusively uses ES6 `import` and `export` statements, Node's internal code and many of the npm packages we're importing are written using CommonJS-style calls to `require`. Because these two module systems work differently under the hood, modules imported via `require` will often be incompatible with the TypeScript compiler's default configuration. Therefore, we'll need to 1) specify that our project uses CommonJS, and 2) set an option to ensure **interopability** between ESM and other module systems.
+  - [ ] Remember that TypeScript is a *superset* of JavaScript, which means all JavaScript is technically valid TypeScript code. But TypeScript is statically typed, whereas JavaScript isn't - so how does this work? Well, TypeScript has an interesting feature called **type inference** - which means that if a variable doesn't have a type specified, TypeScript will infer what it should be and assign one automatically. If it can't tell (i.e the shape of the variable doesn't match any types we've defined), it will default to `any`. Since it's best practice to avoid using the `any` type as much as possible, let's set an option to restrict this behavior. What option can we include to **disallow variables with an implicit type of `any`**?
 - [ ] Once TypeScript and Webpack are both configured correctly, the TypeScript loader will be able to parse your files and will begin to compile your code. Unfortunately, however, the React app still isn't loading! You'll see an error message in both the terminal and in your browser window, which should give you some insight into what's going on - we've just encountered our first TypeScript compiler error. 
 
 ## Eliminating typing errors
@@ -76,7 +79,7 @@ Before we jump into building out the components, first we will refactor some of 
 Let's go ahead and finish building out the application. We'll start at the lowest level component, the box.
 
 - [ ] Navigate to the `Box.tsx` file. 
-- [ ] As with all functions, we must explicitly define any arguments our React functional components will take in - which, in this case, is the `props` object. Create a type `BoxProps` that defines the specific props we expect to be passed to this component. Because this type won't be used anywhere else in the application, is can be defined in this file. If you would prefer to keep all of your types in one place, you can add the `BoxProps` type to the `types.ts` file and import it.
+- [ ] As with all functions, we must explicitly define any arguments our React functional components will take in - which, in this case, is the `props` object. Create a type `BoxProps` that defines the specific props we expect to be passed to this component. Because this type won't be used anywhere else in the application, it can be defined in this file. If you would prefer to keep all of your types in one place, you can add the `BoxProps` type to the `types.ts` file and import it.
 - [ ] Add all the props to your type `BoxProps`. One of the props you should include will be a function called `handleBoxClick`. As the state of the board lives in the Board component, the functionality for `handleBoxClick` will live in the Board and be passed down to the box component. 
   - [ ] It's up to you to determine what other props your Box component should take. Make sure that all of them are typed thoughtfully. If you need to use any of our previously defined types, you'll want to import them from `types.ts`. 
 - [ ] Now you can add the props as a parameter to your functional Box component, and make sure to specify that the passed in props should be of type `BoxProps`. Next, we'll incorporate the props into the button our Box component is rendering. This button needs to render the correct character, and should invoke the `handleBoxClick` function when clicked.
@@ -96,7 +99,7 @@ Now let's head over to the board component to finish up the front end!
 - [ ] Voilà! You should now be able to see your tic tac toe board in the browser! While beautiful, your board won't be functional until we've added some code to the `handleBoxClick` method. Write your logic to update the board here, and remember to properly type the function as you go!
   - [ ] In this function, you should create a variable of type `BoardContent` that creates a copy of the current board's state. 
   - [ ] Once you've copied the board, call `setState` to update the correct element in the board based on which box was clicked.  
-    - Make sure your call to `setState` updates the current player as well. After finishing up this fucntionality, your tic-tac-toe game should be functional.
+    - Make sure your call to `setState` updates the current player as well. After finishing up this functionality, your tic-tac-toe game should be functional.
 
 Now, go back through to double-check the board file and add typing wherever possible!
 
@@ -104,16 +107,16 @@ Now, go back through to double-check the board file and add typing wherever poss
 
 Now that our game is functional, we'll be adding in some backend functionality to store how many wins each player has in a scoreboard. 
 
-- [ ] First, let's take a look at your backend. In your `server.js` file, you have three endpoints set up. You will be building out the middleware for each of these endpoints, located in the `playerController.ts` file. For this unit, we will be using the `db.json` file as our database. We will read from and write to our file using Node's `fs` module.
+- [ ] First, let's take a look at your backend. In your `server.ts` file, you have three endpoints set up. You will be building out the middleware for each of these endpoints, located in the `playerController.ts` file. For this unit, we will be using the `db.json` file as our database. We will read from and write to our file using Node's `fs` module.
 
 - [ ] While we are looking at this server file, let's go ahead an uncomment the global error handler so that we can add some typing to it. 
   - [ ] Define a type called `ServerError` that corresponds to the default error.
   - [ ] Let's also type the parameters that our error handling function takes. Remember, error handlers in Express must take in four arguments: an **error**, the **request**, **response**, and the **next function**.
-    - If you look at the `package.json`, you'll see that we've installed a [package](https://www.npmjs.com/package/@types/express) called `@types/express`. This package adds types to Express's library and makes them available for us to import - which we're doing at the top of our `server.js` file. `Request`, `Response`, and `NextFunction` are types that correspond to Express's request/response objects and the `next` function.
+    - If you look at the `package.json`, you'll see that we've installed a [package](https://www.npmjs.com/package/@types/express) called `@types/express`. This package adds types to Express's library and makes them available for us to import - which we're doing at the top of our `server.ts` file. `Request`, `Response`, and `NextFunction` are types that correspond to Express's request/response objects and the `next` function.
     - For the first parameter, you can use the `ServerError` type you just created.
 
 - [ ] Before we build out our middleware, let's revisit our `Board.tsx` file and add some code to the `getScores` function. This function should make an AJAX request to the `/api` route. As you saw earlier, this function is invoked in two places: in the `componentDidMount` that gets the scores on load, and in the `checkForWinner` function to update the database whenever a player wins. Set up this method so that it can make both types of requests. By making the parameters optional, you've enabled some more flexibility in this function. For the `POST` method, make sure to include the winning player on the request body.
-  - Remember to type the callbacks for your chained `then` and `catch` invocations! (Refer to the responses being returned in `server.js` for what data type the arguments should be.) 
+  - Remember to type the callbacks for your chained `then` and `catch` invocations! (Refer to the responses being returned in `server.ts` for what data type the arguments should be.) 
   - We will want our response object to be of type `Scoreboard` after it's parsed.
 
 - [ ] Now that the frontend is looking good, let's go work on your controllers! In the `playerController.ts` file, you will find a `playerController` object being exported. This object contains the methods `getScores` and `updateScores`. Before we add functionality to the middleware, let's first create an alias for the controller. As with the `BoxProps` and `RowProps` aliases, this type can either be declared in the file it's being used, or imported fromo the `type.ts` file. This alias should be an object with each of the middleware functions as properties.
