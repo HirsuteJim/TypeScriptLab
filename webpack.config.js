@@ -16,10 +16,15 @@ module.exports = {
         exclude: /node_modules/,
         use: ['babel-loader'],
       },
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: ['ts-loader'],
+      },
     ],
   },
   resolve: {
-    extensions: ['.jsx', '.js'],
+    extensions: ['.jsx', '.js', '.tsx', '.ts'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -27,7 +32,7 @@ module.exports = {
       filename: './index.html',
     }),
     new CopyPlugin({
-      patterns: [{ from: './src/client/style.css' }],
+      patterns: [{from: './src/client/style.css'}],
     }),
   ],
   devServer: {
@@ -36,8 +41,7 @@ module.exports = {
     },
     proxy: {
       '/api': 'http://localhost:3000',
-      secure: false
-    }
+      'secure': false,
+    },
   },
-
-}
+};

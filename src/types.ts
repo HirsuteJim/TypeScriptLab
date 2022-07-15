@@ -4,9 +4,25 @@ export type Scoreboard = {
   O: number
 }
 
-export type Player = any;
+export type Player = 'X' | 'O';
 
-export type BoardText = any;
+export type BoardText = 'X' | 'O' | '-';
 
-export type BoardContent = any; 
+export type BoardContent = [
+  [BoardText, BoardText, BoardText],
+  [BoardText, BoardText, BoardText],
+  [BoardText, BoardText, BoardText]
+];
 
+export type BoxProps = {
+  handleBoxClick: Function,
+  content: BoardText
+};
+
+/*
+    [
+      ['-', '-', '-'],
+      ['-', '-', '-'],
+      ['-', '~', '-'],
+    ];
+*/

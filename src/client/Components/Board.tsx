@@ -20,7 +20,7 @@ class Board extends Component<{}, BoardState> {
       currentPlayer: 'X',
       gameOver: false,
       message: '',
-      scoreboard: { X: 0, O: 0 },
+      scoreboard: {X: 0, O: 0},
     };
 
     // these methods need to be bound to the context of `this` since
@@ -38,25 +38,25 @@ class Board extends Component<{}, BoardState> {
     this.checkForWinner();
   }
 
-/**
- * @method newBoard
- * @description - returns a blank BoardContent array,
- *  for the start of a new game
- */
-  newBoard() {
+  /**
+   * @method newBoard
+   * @description - returns a blank BoardContent array,
+   *  for the start of a new game
+   */
+  newBoard(): BoardContent {
     return [
       ['-', '-', '-'],
       ['-', '-', '-'],
-      ['-', '~', '-']
-    ]
+      ['-', '-', '-'],
+    ];
   }
 
-/**
- * @method resetBoard
- * @description - sets to board object to be all '-',
- *  and sets gameOver and message to default state
- */
-  resetBoard() {
+  /**
+   * @method resetBoard
+   * @description - sets to board object to be all '-',
+   *  and sets gameOver and message to default state
+   */
+  resetBoard(): void {
     this.setState({
       gameOver: false,
       board: this.newBoard(),
@@ -64,68 +64,79 @@ class Board extends Component<{}, BoardState> {
     });
   }
 
-/**
- * @method checkForWinner
- * @description - checks to see if either player has filled a row
- *  if so, ends the game and updates the message to declare winner
- */
-  checkForWinner() {
-
-    const { board, gameOver, currentPlayer } = this.state;
+  /**
+   * @method checkForWinner
+   * @description - checks to see if either player has filled a row
+   *  if so, ends the game and updates the message to declare winner
+   */
+  checkForWinner(): void {
+    const {board, gameOver, currentPlayer} = this.state;
 
     // helper function to check if board is filled
-    const spacesLeft = () => {
+    const spacesLeft = (): boolean => {
       for (let i of board) {
         if (i.includes('-')) return true;
       }
       return false;
-    }
+    };
 
     if (!gameOver) {
-        // win conditions: matching rows, columns, or diagonals, that are not empty('-')
-        if ((board[0][0] === board[0][1] && board[0][1] === board[0][2] && board[0][2] !== '-') ||
-          (board[1][0] === board[1][1] && board[1][1] === board[1][2] && board[1][2] !== '-') ||
-          (board[2][0] === board[2][1] && board[2][1] === board[2][2] && board[2][2] !== '-') ||
-          (board[0][0] === board[1][0] && board[1][0] === board[2][0] && board[2][0] !== '-') ||
-          (board[0][1] === board[1][1] && board[1][1] === board[2][1] && board[2][1] !== '-') ||
-          (board[0][2] === board[1][2] && board[1][2] === board[2][2] && board[2][2] !== '-') ||
-          (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[2][2] !== '-') ||
-          (board[2][0] === board[1][1] && board[1][1] === board[0][2] && board[0][2] !== '-')
-        ) {
-          // winner is the person who's turn was previous
-          const winner = currentPlayer === 'X' ? 'o' : 'X';
+      // win conditions: matching rows, columns, or diagonals, that are not empty('-')
+      if (
+        (board[0][0] === board[0][1] &&
+          board[0][1] === board[0][2] &&
+          board[0][2] !== '-') ||
+        (board[1][0] === board[1][1] &&
+          board[1][1] === board[1][2] &&
+          board[1][2] !== '-') ||
+        (board[2][0] === board[2][1] &&
+          board[2][1] === board[2][2] &&
+          board[2][2] !== '-') ||
+        (board[0][0] === board[1][0] &&
+          board[1][0] === board[2][0] &&
+          board[2][0] !== '-') ||
+        (board[0][1] === board[1][1] &&
+          board[1][1] === board[2][1] &&
+          board[2][1] !== '-') ||
+        (board[0][2] === board[1][2] &&
+          board[1][2] === board[2][2] &&
+          board[2][2] !== '-') ||
+        (board[0][0] === board[1][1] &&
+          board[1][1] === board[2][2] &&
+          board[2][2] !== '-') ||
+        (board[2][0] === board[1][1] &&
+          board[1][1] === board[0][2] &&
+          board[0][2] !== '-')
+      ) {
+        // winner is the person who's turn was previous
+        const winner: Player = currentPlayer === 'X' ? 'O' : 'X';
 
-          this.setState({
-            gameOver: true,
-            message: `Player ${winner} wins!`
-          });
+        this.setState({
+          gameOver: true,
+          message: `Player ${winner} wins!`,
+        });
 
-          this.getScores('POST', JSON.stringify({ winner }));
+        this.getScores('POST', JSON.stringify({winner}));
 
         // draw condition: no '-' remaining in board without above win condition triggering
-        } else if (!spacesLeft()){
-          this.setState({
-            gameOver: true,
-            message: 'Draw!'
-          });
-        }
+      } else if (!spacesLeft()) {
+        this.setState({
+          gameOver: true,
+          message: 'Draw!',
+        });
       }
     }
-
-  getScores() {
-  
   }
 
-  handleBoxClick() {
+  getScores(parm1?: String, parm2?: String) {}
 
-  }
+  handleBoxClick() {}
 
   render() {
     // insert logic to render rows here
 
     // Destructure scores for X and O from state so that they can individually be rendered below
-    const { X, O }: Scoreboard = this.state.scoreboard;
-
+    const {X, O}: Scoreboard = this.state.scoreboard;
 
     return (
       <div className='board'>
