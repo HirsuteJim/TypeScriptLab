@@ -24,7 +24,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.jsx', '.js', '.tsx', '.ts'],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -40,8 +40,14 @@ module.exports = {
       directory: path.join(__dirname, './dist'),
     },
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': 'http://127.0.0.1:3000',
       'secure': false,
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
     },
   },
 };

@@ -1,6 +1,6 @@
 
 body {
-  margin: 0;
+  margin: 20;
 }
 
 .container {
@@ -10,8 +10,27 @@ body {
 .box {
   height: 100px;
   width: 100px;
+  font-size: xx-large;
 }
 
 #app {
   text-align: center;
+}
+
+
+#daMark {
+  animation-duration: 2s;
+  animation-name: slidein;
+}
+
+@keyframes slidein {
+  from {
+    margin-left: 100%;
+    /* width: 300%; */
+  }
+
+  to {
+    margin-left: 0%;
+    /* width: 100%; */
+  }
 }

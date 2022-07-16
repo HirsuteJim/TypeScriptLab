@@ -15,14 +15,19 @@ export type BoardContent = [
 ];
 
 export type BoxProps = {
-  handleBoxClick: Function,
-  content: BoardText
+  key1: String;
+  handleBoxClick: Function;
+  content: BoardText;
 };
 
-/*
-    [
-      ['-', '-', '-'],
-      ['-', '-', '-'],
-      ['-', '~', '-'],
-    ];
-*/
+export type RowProps = {
+  row: number;
+  handleBoxClick: Function;
+  content: [BoardText, BoardText, BoardText];
+};
+
+export type ServerError = {
+  log: String;
+  status: number;
+  message: {err: String};
+};

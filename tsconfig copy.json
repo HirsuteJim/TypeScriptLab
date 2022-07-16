@@ -6,7 +6,10 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    // "target": "es2016",
+    // "rootDir": "./src",
+    // "outDir": "./compiled",
   },
   "include": ["src/**/*"]
 }

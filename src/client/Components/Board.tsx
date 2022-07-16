@@ -115,6 +115,7 @@ class Board extends Component<{}, BoardState> {
           gameOver: true,
           message: `Player ${winner} wins!`,
         });
+          console.log('🔴🟠🟡🟢🔵🟣🔴🟠🟡🟢🔵🟣 | file: Board.tsx | line 118 | Board | checkForWinner | winner', winner);
 
         this.getScores('POST', JSON.stringify({winner}));
 
@@ -128,19 +129,90 @@ class Board extends Component<{}, BoardState> {
     }
   }
 
-  getScores(parm1?: String, parm2?: String) {}
+  getScores(parm1?: string, parm2?: string) {
+    let header = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'X-Requested-With',
+    };
+    if (!parm1) {
+      header = {
+        'Content-Type': 'text/xml',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'X-Requested-With',
+      };
+      parm1 = 'GET';
+    }
 
-  handleBoxClick() {}
+    console.log('MAKING REQUEST FOR ' + parm1 + ' WITH DATA: ', parm2);
+    fetch('http://127.0.0.1:3000/api', {
+      method: parm1,
+      // headers: header,
+      body: parm2,
+      // body: {"winner": "X"},
+    })
+      .then((response) => response.json())
+      .then((data: Scoreboard) => {
+        console.log(
+          '🔴🟠🟡🟢🔵🟣 | file: Board.tsx | line 140 | Board | .then | data',
+          data
+        );
+      })
+      .catch((err) => {
+        console.log('ERROR: ', err.message);
+      });
+  }
+
+  handleBoxClick(key): void {
+    console.log(
+      '🔴🟠🟡🟢🔵🟣 | file: Board.tsx | line 134 | Board | handleBoxClick | key',
+      key
+    );
+    // const boardCopy: BoardContent = [...this.state.board];
+    const boardCopy: BoardContent = [...this.state.board];
+    /*
+    [
+      ['-', '-', '-'],
+      ['-', '-', '-'],
+      ['-', '-', '-'],
+    ]
+    */ //Cur player
+    const curPlayer: Player = this.state.currentPlayer;
+
+    if (boardCopy[key[1]][key[3]] !== '-') return;
+
+    //Update correct board
+    boardCopy[key[1]][key[3]] = curPlayer; //x or o
+
+    //! Here we actually set the X or O in da box.
+    // this.setState({ board: boardCopy, currentPlayer: 'X' });
+    this.setState({board: boardCopy});
+    this.setState({
+      board: boardCopy,
+      currentPlayer: curPlayer === 'X' ? 'O' : 'X',
+    });
+
+    //! NOW is's time change to the NEXT playerayert
+    // this.setState({currentPlayer})
+  }
 
   render() {
     // insert logic to render rows here
 
     // Destructure scores for X and O from state so that they can individually be rendered below
     const {X, O}: Scoreboard = this.state.scoreboard;
+    const board: BoardContent = this.state.board;
+
+    const rows: JSX.Element[] = [];
+    for (let i = 0; i < 3; i++) {
+      rows.push(
+        <Row row={i} handleBoxClick={this.handleBoxClick} content={board[i]} />
+      );
+    }
 
     return (
       <div className='board'>
-        {/* {rows} */}
+        {rows}
         <button id='reset' onClick={this.resetBoard}>
           Reset
         </button>
